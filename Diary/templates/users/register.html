@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block content %}
+    <p>
+        {% if form %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="fieldWrapper">
+                <label for="{{ form.username.id_for_label }}">Enter username:</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+            <div class="fieldWrapper">
+                <label for="{{ form.password.id_for_label }}">Enter password:</label>
+                {{ form.password }}
+                {{ form.password.errors }}
+            </div>
+            <input type="submit" value="Register">
+        </form>
+        {% endif %}
+        Do you already have an account? <a href="{% url 'login' %}">Login</a>
+    </p>
+{% endblock %}

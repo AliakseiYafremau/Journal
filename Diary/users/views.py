@@ -14,9 +14,9 @@ def register(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             if not CustomUser.objects.filter(username=username).exists():
-                new_user = CustomUser.objects.create_user(username, password)
+                new_user = CustomUser.objects.create_user(username=username, password=password)
                 django_login(request, new_user)
-                return render(request, 'users/register.html')
+                return redirect('home')
             form.add_error('username', 'Username is already taken')
     else:
         form = LoginForm()

@@ -14,10 +14,11 @@ def home(request):
             form = CreateLessonForm(request.POST)
             if form.is_valid():
                 name = form.cleaned_data.get('name')
+                description = form.cleaned_data.get('description')
                 if Lesson.objects.filter(name=name, user=user).exists():
                     form.add_error('name', 'Lesson already exists')
                 else:
-                    Lesson.objects.create(name=name, user=user)
+                    Lesson.objects.create(name=name, description=description, user=user)
         if form_type == 'delete':
             form = DeleteLessonForm(request.POST)
             if form.is_valid():

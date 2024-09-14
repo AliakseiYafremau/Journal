@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% load lesson_tags %}
+
+{% block title %}
+{{ lesson.name|title }}
+{% endblock %}
+
+
+{% block content %}
+    <h1>
+        Lesson: {{ lesson.name|title }}
+    </h1>
+    <p>
+        <table class="table table-striped table-bordered table-sm border-dark">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Grade</th>
+                <th>Action</th>
+            </tr>
+            {% for criterion in lesson.criterion_set.all %}
+                <tr>
+                    <td><h2>{{ criterion.name }}</h2>
+                        <br>
+                        <b>{% avg_grade_crit criterion.id %}</b>
+                        <br>
+                        Total: <b>{% total_grade_crit criterion.id %}</b>
+                    </td>
+                    <td>{{ criterion.description }}</td>
+                    <td>
+                        <ul>
+                        {% for grade in criterion.grade_set.all %}
+                        <li>
+                            {{ grade.value }}
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form" value="delete_grade">
+                                <input type="hidden" name="id" value="{{ grade.id }}">
+                                <input class="btn btn-danger" type="submit" value="Delete">
+                            </form>
+                        </li>
+                        {% endfor %}
+                        <li>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="fieldWrapper">
+                                    <label for="{{ create_grade_form.value.id_for_label }}">Enter value:</label>
+                                    {{ create_grade_form.value }}
+                                    {{ create_grade_form.value.errors }}
+                                </div>
+                                <input type="hidden" name="form" value="create_grade">
+                                <input type="hidden" name="criterion" value="{{ criterion.id }}">
+                                <input class="btn btn-success" type="submit" value="Create">
+                            </form>
+                        </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="form" value="delete_criterion">
+                            <input type="hidden" name="id" value="{{ criterion.id }}">
+                            <input class="btn btn-danger" type="submit" value="Delete">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <h4>Current grade: {% lesson_grade lesson.id %}</h4>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="fieldWrapper">
+                <label for="{{ create_criterion_form.name.id_for_label }}">Enter name:</label>
+                {{ create_criterion_form.name }}
+                {{ create_criterion_form.name.errors }}
+            </div>
+            <div class="fieldWrapper">
+                <label for="{{ create_criterion_form.description.id_for_label }}">Enter description:</label>
+                {{ create_criterion_form.description }}
+                {{ create_criterion_form.description.errors }}
+            </div>
+            <div class="fieldWrapper">
+                <label for="{{ create_criterion_form.percent.id_for_label }}">Enter percent:</label>
+                {{ create_criterion_form.percent }}
+                {{ create_criterion_form.percent.errors }}
+            </div>
+            <input type="hidden" name="form" value="create_criterion">
+            <input type="hidden" name="lesson" value="{{ lesson.id }}">
+            <input class="btn btn-success" type="submit" value="Create">
+        </form>
+    </p>
+{% endblock %}

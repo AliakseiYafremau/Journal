@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+
+{% block content %}
+    <h1>
+        Hello, {{ user.username }}
+    </h1>
+    <p>
+        {% if form %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.name.id_for_label }}">Enter name:</label>
+                {{ form.name }}
+                {{ form.name.errors }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}">Enter description:</label>
+                {{ form.description }}
+                {{ form.description.errors }}
+            </div>
+            <input type="hidden" name="form" value="create">
+            <input class="btn btn-success" type="submit" value="Create">
+        </form>
+        {% endif %}
+    </p>
+    <h1>
+        Lessons:
+    </h1>
+    <p>
+        <ul class="list-group">
+            {% for lesson in lessons %}
+                <li class="list-group-item">
+                    <h3><a class="link-offset-1" href="{% url 'lesson' lesson.id %}">{{ lesson.name }}</a></h3>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="form" value="delete">
+                        <input type="hidden" name="id" value="{{ lesson.id }}">
+                        <input class="btn btn-danger" type="submit" value="Delete">
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </p>
+{% endblock %}
